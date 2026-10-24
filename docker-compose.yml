@@ -1,0 +1,24 @@
+services:
+  liverpool-mongo:
+    image: mongo:latest
+    container_name: liverpool-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: secret
+    volumes:
+      - mongo-data:/data/db
+
+  order-management-app:
+    build: .
+    container_name: order-management-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - liverpool-mongo
+    environment:
+      - SPRING_MONGODB_URI=mongodb://admin:secret@liverpool-mongo:27017/liverpool_db?authSource=admin
+
+volumes:
+  mongo-data:
